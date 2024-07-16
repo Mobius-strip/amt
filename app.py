@@ -76,7 +76,7 @@ def parse_loan_terms(loan_period, loan_interest_rate):
     return years, interest_rate
 
 def clean_currency(value):
-    return float(''.join(filter(str.isdigit, value)))
+    return float(''.join(filter(lambda x: x.isdigit() or x == '.', str(value))))
 
 def generate_amortization_schedule(date_due, loan_period, loan_interest_rate, gross_loan_amount):
     gross_loan_amount = clean_currency(gross_loan_amount)
