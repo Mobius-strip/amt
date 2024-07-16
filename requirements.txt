@@ -1,0 +1,11 @@
+streamlit
+langchain-core
+langchain-openai
+langchain
+langchain-community
+openai
+PyPDF2
+pandas
+Plotly
+streamlit-utils
+streamlit-option-menu
