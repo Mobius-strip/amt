@@ -12,7 +12,8 @@ import plotly.graph_objects as go
 from streamlit_option_menu import option_menu
 
 # Set OpenAI API key
-os.environ['OPENAI_API_KEY'] = st.secrets["general"]["OPENAI_API_KEY"]
+# os.environ['OPENAI_API_KEY'] = st.secrets["general"]["OPENAI_API_KEY"]
+os.environ['OPENAI_API_KEY'] = 'sk-proj-0sj8LZBOVasY9QLUISFKT3BlbkFJ7G7t8hjRq8d6WEPJiVEo'
 
 # Initialize the chat model
 chat_model = ChatOpenAI(temperature=0, model_name='gpt-3.5-turbo')
@@ -132,22 +133,22 @@ if uploaded_file is not None:
     loan_interest_rate = output['loan_interest_rate']
     gross_loan_amount = output['gross_loan_amount']
 
-    gross_loan_amount = clean_currency(gross_loan_amount)
+    gross_loan_amountt = clean_currency(gross_loan_amount)
     loan_years, interest_rate = parse_loan_terms(loan_period, loan_interest_rate)
-    date_due = datetime.strptime(date_due, '%m/%d/%Y')
+    date_duet = datetime.strptime(date_due, '%m/%d/%Y')
 
 
     loan_duration_days = loan_years * 365  # Assuming each year has 365 days
 
 # Calculate loan end date
-    loan_end_date = date_due + timedelta(days=loan_duration_days)
+    loan_end_date = date_duet + timedelta(days=loan_duration_days)
     loan_end_date_str = loan_end_date.strftime('%B %d, %Y')
 
     # Calculate total interest paid
-    total_interest_paid = gross_loan_amount * interest_rate * loan_years
+    total_interest_paid = gross_loan_amountt * interest_rate * loan_years
 
     # Calculate total paid (principal + interest)
-    total_paid = gross_loan_amount + total_interest_paid
+    total_paid = gross_loan_amountt + total_interest_paid
 
     total_interest_paid_str = f"${total_interest_paid:.2f}"
     total_paid_str = f"${total_paid:.2f}"
@@ -203,28 +204,39 @@ if uploaded_file is not None:
         # for key, value in extra_values.items():
         #     st.markdown(f"<h3 style='text-align: center; color: #4CAF50;'>{key}: {value}</h3>", unsafe_allow_html=True)
         #         # Create interactive plots
-        st.markdown("""
-                    <div style="display: flex; flex-wrap: wrap; justify-content: center;">
-                    <div style="flex-basis: 40%; margin: 20px;">
-                        <div style="font-size: 16px; font-weight: bold;">Loan End Date</div>
-                        <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">{loan_end_date_str}}</div>
-                    </div>
-                    <div style="flex-basis: 40%; margin: 20px;">
-                        <div style="font-size: 16px; font-weight: bold;">Loan Duration in Years</div>
-                        <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">{loan_years}</div>
-                    </div>
-                    <div style="flex-basis: 40%; margin: 20px;">
-                        <div style="font-size: 16px; font-weight: bold;">Total Paid</div>
-                        <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">{total_paid_str}</div>
-                    </div>
-                    <div style="flex-basis: 40%; margin: 20px;">
-                        <div style="font-size: 16px; font-weight: bold;">Interest Only Payment</div>
-                        <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">{total_interest_paid_str}</div>
-                    </div>
 
-                    </div>
-"""
-                    , unsafe_allow_html=True)
+#         markdown_str = f"""
+#     <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+#         <div style="flex-basis: 40%; margin: 20px;">
+#             <div style="font-size: 16px; font-weight: bold;">Loan End Date</div>
+#             <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">{loan_end_date_str}</div>
+#         </div>
+#     </div>
+# """
+
+#         st.markdown(markdown_str, unsafe_allow_html=True)
+        markdown_text = """
+    <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+        <div style="flex-basis: 40%; margin: 20px;">
+            <div style="font-size: 16px; font-weight: bold;">Loan End Date</div>
+            <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">{}</div>
+        </div>
+        <div style="flex-basis: 40%; margin: 20px;">
+            <div style="font-size: 16px; font-weight: bold;">Loan Duration in Years</div>
+            <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">{}</div>
+        </div>
+        <div style="flex-basis: 40%; margin: 20px;">
+            <div style="font-size: 16px; font-weight: bold;">Total Paid</div>
+            <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">{}</div>
+        </div>
+        <div style="flex-basis: 40%; margin: 20px;">
+            <div style="font-size: 16px; font-weight: bold;">Interest Only Payment</div>
+            <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">{}</div>
+        </div>
+    </div>
+""".format(loan_end_date_str, loan_years, total_paid_str, total_interest_paid_str)
+
+        st.markdown(markdown_text, unsafe_allow_html=True)
         
         fig = go.Figure()
 
