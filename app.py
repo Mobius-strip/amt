@@ -132,8 +132,32 @@ if uploaded_file is not None:
     loan_interest_rate = output['loan_interest_rate']
     gross_loan_amount = output['gross_loan_amount']
 
+    gross_loan_amount = clean_currency(gross_loan_amount)
+    loan_years, interest_rate = parse_loan_terms(loan_period, loan_interest_rate)
+    date_due = datetime.strptime(date_due, '%m/%d/%Y')
+
+
+    loan_duration_days = loan_years * 365  # Assuming each year has 365 days
+
+# Calculate loan end date
+    loan_end_date = date_due + timedelta(days=loan_duration_days)
+    loan_end_date_str = loan_end_date.strftime('%B %d, %Y')
+
+    # Calculate total interest paid
+    total_interest_paid = gross_loan_amount * interest_rate * loan_years
+
+    # Calculate total paid (principal + interest)
+    total_paid = gross_loan_amount + total_interest_paid
+
+    total_interest_paid_str = f"${total_interest_paid:.2f}"
+    total_paid_str = f"${total_paid:.2f}"
+
     schedule = generate_amortization_schedule(date_due, loan_period, loan_interest_rate, gross_loan_amount)
     df_schedule = pd.DataFrame(schedule)
+
+
+    # Calculate loan duration in days
+    
 
     # Define the loan details
     extra_values = {
@@ -183,19 +207,19 @@ if uploaded_file is not None:
                     <div style="display: flex; flex-wrap: wrap; justify-content: center;">
                     <div style="flex-basis: 40%; margin: 20px;">
                         <div style="font-size: 16px; font-weight: bold;">Loan End Date</div>
-                        <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">01/15/2030</div>
+                        <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">{loan_end_date_str}}</div>
                     </div>
                     <div style="flex-basis: 40%; margin: 20px;">
-                        <div style="font-size: 16px; font-weight: bold;">Loan Period</div>
-                        <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">10 years</div>
+                        <div style="font-size: 16px; font-weight: bold;">Loan Duration in Years</div>
+                        <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">{loan_years}</div>
                     </div>
                     <div style="flex-basis: 40%; margin: 20px;">
                         <div style="font-size: 16px; font-weight: bold;">Total Paid</div>
-                        <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">$10,000,000</div>
+                        <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">{total_paid_str}</div>
                     </div>
                     <div style="flex-basis: 40%; margin: 20px;">
                         <div style="font-size: 16px; font-weight: bold;">Interest Only Payment</div>
-                        <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">$4,375.00</div>
+                        <div style="font-size: 32px; color: #8CC63E; font-weight: bold;">{total_interest_paid_str}</div>
                     </div>
 
                     </div>
